@@ -37,7 +37,8 @@ def captureImage(folder):
     faces = faceDet.detectMultiScale(gray, 1.3, 5)
     for (x, y, w, h) in faces:
         roi_gray = gray[y:y + h, x:x + w]
-        saveimg(folder, roi_gray)
+        # saveimg(folder, roi_gray)
+        print roi_gray.shape
 
 
 captureImage('image/surprised/')
