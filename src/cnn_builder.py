@@ -111,8 +111,8 @@ def cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3)],
 
 if __name__ == '__main__':
     # import dataset:
-    X_fname = '../data/X_train_md.npy'
-    y_fname = '../data/y_train_md.npy'
+    X_fname = '../data/X_train_md_self.npy'
+    y_fname = '../data/y_train_md_self.npy'
     X_train = np.load(X_fname)
     y_train = np.load(y_fname)
     print 'Loading data...'

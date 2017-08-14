@@ -15,8 +15,10 @@ listEmotion = ['angry','fear', 'smile', 'sad','surprised','neutral']
 def convert_img_to_csv(rootdir='../data/results/'):
     # read all the images and write to a csv with emtion, pixel
     with open('../data/training.csv', 'wb') as csvfile:
-        csvfile.write("emotion, pixels")
-        csvfile.write('\r')
+        # csvfile.write("emotion,pixels")
+        writer = csv.writer(csvfile)
+        writer.writerow(["emotion", "pixels"])
+        # csvfile.write('\r')
 
         for subdir, dirs, files in os.walk(rootdir):
             for file in files:
@@ -29,13 +31,33 @@ def convert_img_to_csv(rootdir='../data/results/'):
                     if listEmotion.__contains__(array[array.__len__()-2]):
                         emotion = dictEmotion[array[array.__len__()-2]]
                         # print emotion
-                        fileimg = cv2.imread(fileName)
+                        fileimg = cv2.imread(fileName,0)
+                        # fileimg_new = [len(fileimg)]
+                        # j=0
+                        # for i in fileimg:
+                        #     print i[j][0]
+                        #     for k in i:
+                        #         print i[k]
+                        #         fileimg_new[j]=i[k][0]
+                        #     j=j+1
+                        # print fileimg_new
                         one1array = convert_img_array_to_1d_array(fileimg)
+                        j = 0
+                        # k =0
+                        # one1array_new =[len(one1array)]
+                        # for ind, i in enumerate(one1array):
+                        #     if ind % 3 ==0 and ind!=0:
+                        #         one1array_new.append(one1array[ind])
+                        #         # k = k+1
+                            # j=j+1
+
+                        # one1array_new = filter(lambda x: (x) % 3 == 0, one1array)
+                        # print one1array_new
                         arrayText = " ".join([str(x) for x in one1array])
                         # print one1array
                         rowText = emotion + "," + arrayText
                         print rowText
-                        csvfile.write(rowText+"\r")
+                        writer.writerow([emotion, arrayText])
         csvfile.close()
 
 def convert_img_array_to_1d_array(rbgArray):
