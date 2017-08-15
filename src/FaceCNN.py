@@ -14,14 +14,18 @@ from keras.models import model_from_json
 
 pathclassifier = os.getcwd() + '/'
 
+pixelsize = 96
+dim = (pixelsize, pixelsize)
+dim2 = (1, 1, pixelsize, pixelsize)
+
 def saveimg(folder, img):
-    dim = (48, 48)
+
     resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     filename = pathclassifier + folder + 'img' + datetime.now().strftime('%Y%m%d_%H%M%S%f') + '.jpg'
     cv2.imwrite(filename, resized)
 
 def load_model(modePath="../data/results"):
-    with open(modePath+'/cnn_model.txt', 'r') as f:
+    with open(modePath+'/cnn_model_96.txt', 'r') as f:
         json_string = f.read()
         model = model_from_json(json_string)
         f.close
@@ -33,10 +37,12 @@ API for predict by the real time from camera
 def predict_emotion(face_image_gray): # a single cropped face
     # load previous trained model
     model = load_model()
-    model.load_weights("../data/weights/cnn_weights")
+    model.load_weights("../data/weights/cnn_weights_96")
 
-    resized_img = cv2.resize(face_image_gray, (48,48), interpolation = cv2.INTER_AREA)
-    image = resized_img.reshape(1, 1, 48, 48)
+    resized_img = cv2.resize(face_image_gray, dim, interpolation = cv2.INTER_AREA)
+    print resized_img
+    image = resized_img.reshape(dim2)
+    print image
     list_of_list = model.predict(image, batch_size=1, verbose=1)
     angry, fear, happy, sad, surprise, neutral = [prob for lst in list_of_list for prob in lst]
     return [angry, fear, happy, sad, surprise, neutral]
@@ -47,10 +53,12 @@ API for predict by the read from the image files
 def predict_emotion_from_img(face_image_gray): # a single cropped face
     # load previous trained model
     model = load_model()
-    model.load_weights("../data/weights/cnn_weights")
+    model.load_weights("../data/weights/cnn_weights_96")
+    # print face_image_gray
     newarray = face_image_gray.ravel()
-    resized_img = cv2.resize(newarray, (48,48), interpolation = cv2.INTER_AREA)
-    image = resized_img.reshape(1, 1, 48, 48)
+    print newarray
+    resized_img = cv2.resize(newarray, dim, interpolation = cv2.INTER_AREA)
+    image = resized_img.reshape(dim2)
     print image
     list_of_list = model.predict(image, batch_size=1, verbose=1)
     angry, fear, happy, sad, surprise, neutral = [prob for lst in list_of_list for prob in lst]
@@ -111,8 +119,9 @@ def real_time_detection():
 
 if __name__ == '__main__':
     try:
-        # real_time_detection()
-        read_file_detetion()
+        real_time_detection()
+        # read_file_detetion()
+        # [angry, fear, happy, sad, surprise, neutral]
     except:
         print "Unexpected error:",   sys.exc_info()[0]
         raise

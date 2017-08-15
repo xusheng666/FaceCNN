@@ -7,15 +7,16 @@ import pandas as pd
 import numpy as np
 import random
 import sys
+from Utility import convert_img_to_csv
 
 
 # emotion labels from FER2013:
-emotion = {'Angry': 0, 'Disgust': 1, 'Fear': 2, 'Happy': 3,
-           'Sad': 4, 'Surprise': 5, 'Neutral': 6}
+emotion = {'Angry': 0,  'Fear': 1, 'Happy': 2,
+           'Sad': 3, 'Surprise': 4, 'Neutral': 5}
 emo     = ['Angry', 'Fear', 'Happy',
            'Sad', 'Surprise', 'Neutral']
 
-def reconstruct(pix_str, size=(48,48)):
+def reconstruct(pix_str, size=(96,96)):
     pix_arr = np.array(map(int, pix_str.split()))
     print pix_arr
 
@@ -24,8 +25,8 @@ def reconstruct(pix_str, size=(48,48)):
 def emotion_count(y_train, classes, verbose=True):
     emo_classcount = {}
     print 'Disgust classified as Angry'
-    y_train.loc[y_train == 1] = 0
-    classes.remove('Disgust')
+    # y_train.loc[y_train == 1] = 0
+    # classes.remove('Disgust')
     for new_num, _class in enumerate(classes):
         y_train.loc[(y_train == emotion[_class])] = new_num
         class_count = sum(y_train == (new_num))
@@ -35,13 +36,13 @@ def emotion_count(y_train, classes, verbose=True):
     return y_train.values, emo_classcount
 
 def load_data(sample_split=0.3, usage='Training', to_cat=True, verbose=True,
-              classes=['Angry','Happy'], filepath='../data/training.csv'):
+              classes=['Angry','Happy'], filepath='../data/training_96.csv'):
     df = pd.read_csv(filepath)
     # print df.tail()
     # print df.Usage.value_counts()
     # df = df[df.Usage == usage]
     frames = []
-    classes.append('Disgust')
+    # classes.append('Disgust')
     for _class in classes:
         class_df = df[df['emotion'] == emotion[_class]]
         frames.append(class_df)
@@ -72,6 +73,10 @@ def save_data(usage='', fname='', to_cat=True, folder='../data/'):
     print y_train.shape
 
 if __name__ == '__main__':
+    # generate the train csv file for training
+    print 'Prepare Training file...'
+    convert_img_to_csv('../data/meme_faces_96/')
+
     # makes the numpy arrays ready to use:
     print 'Making moves...'
     # emo = ['Angry', 'Fear', 'Happy',
