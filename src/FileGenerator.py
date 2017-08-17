@@ -8,7 +8,9 @@ import numpy as np
 import random
 import sys
 from Utility import convert_img_to_csv
+from cnn_builder import train_cnn_model
 
+dim=(48,48)
 
 # emotion labels from FER2013:
 emotion = {'Angry': 0,  'Fear': 1, 'Happy': 2,
@@ -16,7 +18,7 @@ emotion = {'Angry': 0,  'Fear': 1, 'Happy': 2,
 emo     = ['Angry', 'Fear', 'Happy',
            'Sad', 'Surprise', 'Neutral']
 
-def reconstruct(pix_str, size=(96,96)):
+def reconstruct(pix_str, size=dim):
     pix_arr = np.array(map(int, pix_str.split()))
     print pix_arr
 
@@ -36,7 +38,7 @@ def emotion_count(y_train, classes, verbose=True):
     return y_train.values, emo_classcount
 
 def load_data(sample_split=0.3, usage='Training', to_cat=True, verbose=True,
-              classes=['Angry','Happy'], filepath='../data/training_96.csv'):
+              classes=['Angry','Happy'], filepath='../data/training.csv'):
     df = pd.read_csv(filepath)
     # print df.tail()
     # print df.Usage.value_counts()
@@ -75,7 +77,7 @@ def save_data(usage='', fname='', to_cat=True, folder='../data/'):
 if __name__ == '__main__':
     # generate the train csv file for training
     print 'Prepare Training file...'
-    convert_img_to_csv('../data/meme_faces_96/')
+    convert_img_to_csv('../data/meme_faces/')
 
     # makes the numpy arrays ready to use:
     print 'Making moves...'
@@ -86,8 +88,12 @@ if __name__ == '__main__':
     #                                        usage='PrivateTest',
     #                                        verbose=True)
     print 'Saving...'
-    save_data('Training', fname='_md_self', to_cat=True)
+    npyfilename = '_md_48_self'
+    save_data('Training', fname=npyfilename, to_cat=True)
     # save_data('PrivateTest', fname='_privatetest6_100pct')
     # save_data('PublicTest', fname='_publictest6_100pct')
+    # makes the numpy arrays ready to use:
+    print 'Build Model...'
+    train_cnn_model('../data/X_train'+npyfilename+'.npy', '../data/y_train'+npyfilename+'.npy')
 
     print 'Done!'

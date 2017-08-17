@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 pathclassifier = os.getcwd() + '/'
-haar1 = pathclassifier + 'haarcascade_frontalface_default.xml'
+haar1 = pathclassifier + '../haar/haarcascade_frontalface_default.xml'
 
 
 def saveimg(folder, img):

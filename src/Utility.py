@@ -15,7 +15,7 @@ listEmotion = ['angry','fear', 'smile', 'sad','surprised','neutral']
 def convert_img_to_csv(rootdir='../data/results/'):
     # read all the images and write to a csv with emtion, pixel
     print rootdir
-    with open('../data/training_96.csv', 'wb') as csvfile:
+    with open('../data/training.csv', 'wb') as csvfile:
         # csvfile.write("emotion,pixels")
         writer = csv.writer(csvfile)
         writer.writerow(["emotion", "pixels"])
@@ -54,7 +54,7 @@ def convert_img_array_to_1d_array(rbgArray):
 if __name__ == '__main__':
     try:
         # real_time_detection()
-        convert_img_to_csv('../data/meme_faces_96/')
+        convert_img_to_csv('../data/meme_faces/')
     except:
         print "Unexpected error:",   sys.exc_info()[0]
         raise

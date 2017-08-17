@@ -30,7 +30,7 @@ def logging(model, starttime, batch_size, nb_epoch, conv_arch, dense, dropout, X
 
 
 def cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3)],
-                     dense=[64, 2], dropout=0.2, batch_size=128, nb_epoch=100, validation_split=0.2, patience=5,
+                     dense=[64, 2], dropout=0.3, batch_size=128, nb_epoch=100, validation_split=0.2, patience=5,
                      dirpath='../data/results/'):
     starttime = time.time()
     X_train = X_train.astype('float32')
@@ -66,6 +66,11 @@ def cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3)],
     if conv_arch[2][1] != 0:
         for i in range(conv_arch[2][1]):
             model.add(Convolution2D(conv_arch[2][0], 3, 3, border_mode='same', activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering="th"))
+
+    if conv_arch[3][1] != 0:
+        for i in range(conv_arch[3][1]):
+            model.add(Convolution2D(conv_arch[3][0], 3, 3, border_mode='same', activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering="th"))
 
     model.add(Flatten())  # this converts 3D feature maps to 1D feature vectors
@@ -108,14 +113,18 @@ def cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3)],
 
     return model
 
+def train_cnn_model(X_fname,y_fname):
 
-if __name__ == '__main__':
-    # import dataset:
-    X_fname = '../data/X_train_md_self.npy'
-    y_fname = '../data/y_train_md_self.npy'
     X_train = np.load(X_fname)
     y_train = np.load(y_fname)
     print 'Loading data...'
 
-    cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3)], dense=[64, 2], batch_size=256,
-                     nb_epoch=5, dirpath='../data/results/')
+    cnn_architecture(X_train, y_train, conv_arch=[(32, 3), (64, 3), (128, 3), (256, 3)], dropout=0, dense=[256, 2],
+                     batch_size=256, nb_epoch=50, dirpath='../data/results/')
+
+if __name__ == '__main__':
+    # import dataset:
+    X_fname = '../data/X_train_md_48_self.npy'
+    y_fname = '../data/y_train_md_48_self.npy'
+
+    train_cnn_model(X_fname, y_fname)
